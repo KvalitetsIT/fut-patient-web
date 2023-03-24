@@ -13,6 +13,8 @@ import { AbilityContext } from "../feature/User/logic/Can";
 import { User } from "../models/User";
 import { HomePage } from "../pages/home";
 import { Patients } from "../pages/patients";
+import { QuestionnaireDetails } from "../pages/questionnaire";
+import { Questionnaires } from "../pages/questionnaires";
 import store from "../redux/store";
 
 
@@ -44,8 +46,8 @@ function App() {
                     <Layout>
                         <>
                             <Routes>
-                            <Route path="/" element={<HomePage />} />
-                            <Route path="/patients" element={<Patients />} />
+                            <Route path="/" element={<Questionnaires />} />
+                            <Route path="/serviceRequest/:id" element={<QuestionnaireDetails />} />
                             <Route path="*" element={<Typography>Page not found</Typography>} />
                             
                             </Routes>

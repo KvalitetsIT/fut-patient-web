@@ -1,7 +1,7 @@
 import { Box, Container, CssBaseline, Toolbar, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { theme } from '../../config/theme';
-import WorkspacesIcon from '@mui/icons-material/Workspaces';
+import Quiz from '@mui/icons-material/Quiz';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { Sidebar, SidebarSection, SidebarItem } from './Sidebar';
@@ -45,8 +45,7 @@ export default function Layout(props: LayoutProps) {
           setMobileOpen={setMobileOpen}
           logo={<Title color={theme.palette.primary.contrastText} />}>
           <SidebarSection hideDivider title={"Public"}>
-            <SidebarItem title={t("Dashboard")} icon={<SwapVertIcon />} href={"/"} />
-            <SidebarItem title={t('Patients')} icon={<NotificationsActiveIcon />} href={"/patients"} />
+            <SidebarItem title={t("Questionnaires")} icon={<Quiz />} href={"/"} />
           </SidebarSection>
           
         </Sidebar>

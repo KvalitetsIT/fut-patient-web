@@ -5,7 +5,7 @@ import shadows from "@mui/material/styles/shadows";
 const kit = {
     secondary: {
         light: '#68fffb',
-        main: "#00e6c8",
+        main: "#bddcec",
         dark: '#00b397',
         contrastText: '#000000',
     },
@@ -17,7 +17,6 @@ const kit = {
     }
 }
 
-
 export const theme = createTheme({
     palette: {
         background: {
@@ -25,6 +24,7 @@ export const theme = createTheme({
         },
         secondary: kit.secondary,
         primary: kit.primary,
+        
         success: {
             light: '#4caf50',
             main: "#2e7d32",

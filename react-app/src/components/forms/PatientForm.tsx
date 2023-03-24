@@ -1,4 +1,4 @@
-import { FormControl, Stack, Button, CircularProgress, Box } from "@mui/material";
+import { FormControl, Stack, Button, CircularProgress, Box, MenuItem } from "@mui/material";
 import { Formik, Form } from "formik";
 import { t } from "i18next";
 import * as yup from 'yup';
@@ -9,6 +9,7 @@ import 'dayjs/locale/ar-sa';
 import 'dayjs/locale/da';
 import { Patient } from "../../feature/api/patients";
 import { ValidatedTextField } from "../input/validatedTextField";
+import { ValidatedSelect } from "../input/validatedSelect";
 
 
 
@@ -48,7 +49,7 @@ export function PatientForm(props: PatientFormProps) {
                     checked: false
                 }}
                 onSubmit={(values) => props.onSubmit(values.patient)}
-                validationSchema={validationSchema}
+                validationSchema={(validationSchema)}
                 enableReinitialize
 
             >
@@ -72,6 +73,20 @@ export function PatientForm(props: PatientFormProps) {
                                 value={values.patient?.lastName}
                                 onChange={handleChange}
                             />
+
+                            <ValidatedSelect
+                                    onChange={event => {
+                                        console.log(event);
+                                        handleChange(event);
+                                    }}
+                                    error={undefined}
+                                    value={values.patient?.lastName}
+                                    label={"Answer"}
+                                    name={"answer-select"}>
+                                        <MenuItem value={"a"}>{"a"}</MenuItem>
+                                        <MenuItem value={"b"}>{"b"}</MenuItem>
+                                        <MenuItem value={"c"}>{"c"}</MenuItem>
+                                </ValidatedSelect>
 
 
                             <Stack spacing={2} direction={"row"}>
