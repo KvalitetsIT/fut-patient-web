@@ -28,6 +28,7 @@ export const QuestionnaireDetails = () => {
         return (
         <>
             <Typography variant="h4">{questionnaire.title}</Typography>
+
             <QuestionnaireForm
                 questionnaire={questionnaire}
                 loading={false}
