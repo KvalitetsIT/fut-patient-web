@@ -46,7 +46,7 @@ export const QuestionnaireDetails = () => {
 
                 }}
                 onCancel={() => {
-
+                    navigate("/");
                 }} 
             ></QuestionnaireForm>   
         </>
