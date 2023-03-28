@@ -1,5 +1,6 @@
 import { Questionnaire } from '../../models/Questionnaire';
 import { QuestionnaireResponse } from '../../models/QuestionnaireResponse';
+import { QuestionnaireResponseCount } from '../../models/QuestionnaireResponseCount';
 import HandleQuery from '../../redux/EndpointQueryHandler';
 import { futApiSlice } from '../../redux/fut-api-slice';
 //import handleResponse from '../redux/handleResponse';
@@ -22,11 +23,12 @@ export const questionnaireSlice = futApiSlice.injectEndpoints({
       }),
       providesTags: ["questionnaires"]
     }),
+
     postQuestionnaireResponse: builder.mutation<QuestionnaireResponse, QuestionnaireResponse>({
       query: (qResponse: QuestionnaireResponse) => {
         console.log("qResponse", qResponse);
         return {
-          url: `patients/${qResponse.patientId}/questionnaireResponse`,
+          url: `patients/${qResponse.patientId}/questionnaireResponses`,
           method: "POST",
           body: JSON.stringify(qResponse),
           responseHandler: (res) => handleResponse({ response: res, toastWithResult: false, toastErrorText: "QuestionnaireResponse could not be created" }),
@@ -34,9 +36,34 @@ export const questionnaireSlice = futApiSlice.injectEndpoints({
       },
       invalidatesTags: ["questionnaireResponse"]
     }),
+
+    getQuestionnaireResponseCount: builder.query<QuestionnaireResponseCount, {
+      patientId: string,
+      EpisodeOfCare: string,
+      basedOnServiceRequest: string
+    }>({
+      query: (queryParams) => ({
+        url: `patients/${queryParams.patientId}/questionnaireResponses`,
+        method: "GET",
+        params: {
+          episodeOfCare: queryParams.EpisodeOfCare,
+          basedOnServiceRequest: queryParams.basedOnServiceRequest
+        },
+        responseHandler: (res) => handleResponse({
+          response: res,
+          toastWithResult: false,
+          toastErrorText: "QuestionnaireResponse count could not be fetched"
+        }),
+      }),
+      providesTags: ["questionnaireResponse"]
+    }),
   })
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetQuestionnairesQuery, usePostQuestionnaireResponseMutation } = questionnaireSlice;
+export const {
+  useGetQuestionnairesQuery,
+  usePostQuestionnaireResponseMutation,
+  useGetQuestionnaireResponseCountQuery
+} = questionnaireSlice;

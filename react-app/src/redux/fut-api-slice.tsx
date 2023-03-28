@@ -6,8 +6,6 @@ export const futApiSlice = createApi({
     tagTypes: [
         'patients', 'patient', 'questionnaire', 'questionnaires',
         'questionnaireResponse', 'questionnaireResponses'
-
-        
     ],
     refetchOnMountOrArgChange: true,
     baseQuery: fetchDefaultBaseQuery(),

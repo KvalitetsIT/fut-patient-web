@@ -3,7 +3,8 @@ import { FormikHelpers } from "formik";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { QuestionnaireForm } from "../components/forms/QuestionnaireForm";
-import { useGetQuestionnairesQuery, usePostQuestionnaireResponseMutation } from "../feature/api/questionnaires";
+import { QuesionnaireResponse } from "../components/QuesionnaireResponse";
+import { useGetQuestionnairesQuery, usePostQuestionnaireResponseMutation, useGetQuestionnaireResponseCountQuery } from "../feature/api/questionnaires";
 import { Questionnaire } from "../models/Questionnaire";
 import { QuestionnaireReponseItem, QuestionnaireResponse } from "../models/QuestionnaireResponse";
 
@@ -13,6 +14,7 @@ export const QuestionnaireDetails = () => {
     const navigate = useNavigate();
     const { id: serviceRequestId } = useParams();
     const { data: questionnaires, isLoading } = useGetQuestionnairesQuery(patientId);
+    
     const [
         createResponse, // This is the mutation trigger
         { isLoading: isUpdating }, // This is the destructured mutation result
@@ -48,7 +50,12 @@ export const QuestionnaireDetails = () => {
                 onCancel={() => {
                     navigate("/");
                 }} 
-            ></QuestionnaireForm>   
+            ></QuestionnaireForm>
+            
+                <QuesionnaireResponse
+                    patientId={patientId + ""}
+                    episodeOfCare={questionnaire.episodeOfCare}
+                    serviceRequest={questionnaire.serviceRequest + ""} />
         </>
         )
     }
