@@ -17,7 +17,6 @@ export function ValidatedSelect(props: ValidatedSelect) {
                 labelId={props.name + "-label"}
                 id={props.name}
                 error={props.error}
-                helperText={props.error}
                 as={Select}
 
                 fullWidth

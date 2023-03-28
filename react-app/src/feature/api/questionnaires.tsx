@@ -1,4 +1,5 @@
 import { Questionnaire } from '../../models/Questionnaire';
+import { QuestionnaireResponse } from '../../models/QuestionnaireResponse';
 import HandleQuery from '../../redux/EndpointQueryHandler';
 import { futApiSlice } from '../../redux/fut-api-slice';
 //import handleResponse from '../redux/handleResponse';
@@ -21,10 +22,21 @@ export const questionnaireSlice = futApiSlice.injectEndpoints({
       }),
       providesTags: ["questionnaires"]
     }),
-
+    postQuestionnaireResponse: builder.mutation<QuestionnaireResponse, QuestionnaireResponse>({
+      query: (qResponse: QuestionnaireResponse) => {
+        console.log("qResponse", qResponse);
+        return {
+          url: `patients/${qResponse.patientId}/questionnaireResponse`,
+          method: "POST",
+          body: JSON.stringify(qResponse),
+          responseHandler: (res) => handleResponse({ response: res, toastWithResult: false, toastErrorText: "QuestionnaireResponse could not be created" }),
+        }
+      },
+      invalidatesTags: ["questionnaireResponse"]
+    }),
   })
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetQuestionnairesQuery } = questionnaireSlice;
+export const { useGetQuestionnairesQuery, usePostQuestionnaireResponseMutation } = questionnaireSlice;

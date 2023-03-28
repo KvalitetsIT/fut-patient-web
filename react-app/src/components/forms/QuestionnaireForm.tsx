@@ -7,74 +7,107 @@ import 'dayjs/locale/ru';
 import 'dayjs/locale/de';
 import 'dayjs/locale/ar-sa';
 import 'dayjs/locale/da';
-import { QuestionnaireResponse } from "../../models/QuestionnaireResponse";
+import { QuestionnaireReponseItem } from "../../models/QuestionnaireResponse";
 import { ValidatedSelect } from "../input/validatedSelect";
 import { Question, Questionnaire } from "../../models/Questionnaire";
+import { useState } from "react";
 
-export interface FormProps<T> {
-    onSubmit: (submission: T) => Promise<void>
+export interface FormProps {
+    onSubmit: (submission: QuestionnaireReponseItem[], formik : any) => Promise<void>
     onCancel: () => void,
     isLoading?: boolean
 }
 
-interface QuestionnaireFormProps extends FormProps<QuestionnaireResponse> {
+interface QuestionnaireFormProps extends FormProps {
     questionnaire?: Questionnaire
     loading?: boolean
 }
 
-function createQuestion(item: Question, props: QuestionnaireFormProps,
-        errors: FormikErrors<{ answers: string[]; checked: boolean; }>,
-        touched : FormikTouched<{ answers: string[]; checked: boolean; }>,
-        values: { answers: string[]; checked: boolean; },
+function createQuestion(index: number, item: Question, props: QuestionnaireFormProps,
+        errors: any,
+        touched : FormikTouched<{ answers: QuestionnaireReponseItem[]; checked: boolean; }>,
+        values: { answers: QuestionnaireReponseItem[]; checked: boolean; },
         setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void) {
+            
+    let errorElement = undefined;
+    if (errors.answer) {
+        errorElement = <p>Der skal vælges et svar.</p>
+    }
 
-    return (<>
+    return (<div key = {index}>
         <Typography variant="h5">{ item.text }</Typography>
 
         <ValidatedSelect
             name={""}
-            error={errors.answers && touched.answers}
+            error={errorElement}
             labelId="answer-select-label"
             id="answer-select"
-            value={values.answers[0]}
+            value={values.answers[index].answers[0]} // Only one answer per question
             label=""
             onChange={(event) => {
-                setFieldValue("answers", [event.target.value]);
+                values.answers[index].answers[0] = event.target.value as string;
+                setFieldValue("answers", values.answers)
             }}
         >
-            {item.answerOptions.map((option) => <MenuItem value={option}>{option}</MenuItem>)}
+            <MenuItem key={"empty"} value={""}></MenuItem>
+            {item.answerOptions.map((option) => {
+                return <MenuItem key={option} value={option}>{option}</MenuItem>
+            })}
         </ValidatedSelect>
-    </>);
+    </div>);
+}
+
+function createInitialAnswers(q: Questionnaire) {
+    const result: QuestionnaireReponseItem[] = [];
+
+    q.items.forEach((item) => {
+        const responseItem = new QuestionnaireReponseItem();
+        responseItem.answers.push("");
+        responseItem.linkId = item.linkId;
+        result.push(responseItem);
+    });
+
+    return result;
 }
 
 export function QuestionnaireForm(props: QuestionnaireFormProps) {
 
-    const validationSchema = yup.object().shape({
-        answers: yup.array().of(yup.string().min(1).required(t("Answer") + " " + t("is required"))),
-    })
+    const [stateDisabled, setStateDisabled] = useState(false);
 
     if (props.isLoading) return (<></>)
     else {
-        console.log("props", props);
+        
         return (
             <FormControl fullWidth sx={{ mt: 4 }}>
                 <Formik
                     initialValues={{
-                        answers: [""],
+                        answers: createInitialAnswers(props.questionnaire!),
                         checked: false
                     }}
-                    onSubmit={(values) => props.onSubmit({
-                        answers: values.answers,
-                    })}
-                    enableReinitialize
-                    validationSchema={(validationSchema)}
+                    onSubmit={(values, formik) => {
+                        setStateDisabled(true);
+                        props.onSubmit(values.answers, formik);
+                    }}
+                    enableReinitialize={false}
+                    validate={
+                        (values) => {
+                            console.log("Validate hehe", values);
+                            const errors : any = {};
+                            if (values.answers[0].answers[0].length <= 0) {
+                                errors["answer"] = "Svaret må ikke være tomt";
+                            }
+                            console.log(errors);
+                            return errors;
+                        }
+                    }
                 >
+            
                     {({ errors, touched, values, handleChange, setFieldValue }) => (
                         <Form>
                             <Stack spacing={2}>
                                 {
-                                    props.questionnaire?.items && props.questionnaire?.items.map((item) => {
-                                        return createQuestion(item, props, errors, touched, values, setFieldValue)
+                                    props.questionnaire?.items && props.questionnaire?.items.map((item, index) => {
+                                        return createQuestion(index, item, props, errors, touched, values, setFieldValue)
                                     })
                                 }
 
@@ -82,14 +115,18 @@ export function QuestionnaireForm(props: QuestionnaireFormProps) {
                                     <Button
                                         type={"submit"}
                                         variant="contained"
-                                        disabled={props.loading}
+                                        disabled={props.loading || stateDisabled}
                                         fullWidth={true}
                                     >
                                         {props.loading ? <CircularProgress color={"inherit"} size={"1.5em"}></CircularProgress> : <>{t("Submit")}</>}
                                     </Button>
     
-                                    <Button fullWidth={true} onClick={props.onCancel} variant="outlined">{t("Cancel")+""}</Button>
-                                    </Stack>
+                                    <Button
+                                        fullWidth={true}
+                                        onClick={props.onCancel}
+                                        variant="outlined">{t("Cancel") + ""}
+                                    </Button>
+                                </Stack>
                                     
                             </Stack>
                         </Form>

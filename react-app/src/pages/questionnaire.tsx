@@ -1,30 +1,29 @@
-import { FormControl, InputLabel, List, ListItem, ListItemText, MenuItem, Select, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
+import { FormikHelpers } from "formik";
 import { useParams } from "react-router-dom";
-import { PatientForm } from "../components/forms/PatientForm";
+import { useNavigate } from "react-router-dom";
 import { QuestionnaireForm } from "../components/forms/QuestionnaireForm";
-import { theme } from "../config/theme";
-import { Patient } from "../feature/api/patients";
-import { useGetQuestionnairesQuery } from "../feature/api/questionnaires";
-import { Questionnaire, Question  } from "../models/Questionnaire";
-import { QuestionnaireResponse } from "../models/QuestionnaireResponse";
+import { useGetQuestionnairesQuery, usePostQuestionnaireResponseMutation } from "../feature/api/questionnaires";
+import { Questionnaire } from "../models/Questionnaire";
+import { QuestionnaireReponseItem, QuestionnaireResponse } from "../models/QuestionnaireResponse";
 
 const patientId = 258981; // No login yet, same patient always
 
-interface QuestionnaireProps {
-    questionnaire: Questionnaire
-}
-
-
 export const QuestionnaireDetails = () => {
+    const navigate = useNavigate();
     const { id: serviceRequestId } = useParams();
     const { data: questionnaires, isLoading } = useGetQuestionnairesQuery(patientId);
+    const [
+        createResponse, // This is the mutation trigger
+        { isLoading: isUpdating }, // This is the destructured mutation result
+    ] = usePostQuestionnaireResponseMutation();
 
     if (isLoading) {
         return <p>Loading...</p>
     } else {
         const questionnaire : Questionnaire = questionnaires?.find(
             q => q.serviceRequest.split("/").pop() === serviceRequestId)!;
-        console.log(questionnaire);
+
         return (
         <>
             <Typography variant="h4">{questionnaire.title}</Typography>
@@ -32,8 +31,19 @@ export const QuestionnaireDetails = () => {
             <QuestionnaireForm
                 questionnaire={questionnaire}
                 loading={false}
-                onSubmit={async (submission: QuestionnaireResponse) => {
-                    console.log("Her er svaret", submission);
+                onSubmit={async (submission: QuestionnaireReponseItem[], formik: FormikHelpers<{
+                    answers: QuestionnaireReponseItem[];
+                    checked: boolean;
+                }>) => {    
+                    const response = new QuestionnaireResponse(questionnaire.resource);
+                    response.items = submission;
+                    response.episodeOfCare = questionnaire.episodeOfCare;
+                    response.patientId = patientId + "";
+                    response.serviceRequest = questionnaire.serviceRequest;
+
+                    await createResponse(response);
+                    navigate("/");
+
                 }}
                 onCancel={() => {
 

@@ -13,7 +13,8 @@ export const Questionnaires = () => {
         const parts = questionnaire.serviceRequest.split("/");
         const serviceRequestId = parts[parts.length - 1];
         
-        return <ListItem component={Link} to={`/serviceRequest/${serviceRequestId}`} > 
+        return <ListItem component={Link} to={`/serviceRequest/${serviceRequestId}`}
+                key={questionnaire.serviceRequest}> 
             <ListItemText sx={{
                 borderWidth: 1,
                 borderColor: theme.palette.primary.main,
