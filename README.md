@@ -17,6 +17,8 @@ You need either Docker or nodejs to run the app.
 
 You need to point the web app at the [FUT Patient BFF](https://github.com/KvalitetsIT/fut-patient-bff) server. You can either set the `REACT_APP_API_BASEURL` environment variable in the build environment or set it directly in  `src/redux/BaseQuerySettings.tsx` during development and testing. Default URL is `http://localhost:8080/v1/`.
 
+# Known issues
+Login and security is currently not implemented in this demo application. All authentication is handled in the BFF and the patientId is hardcoded into the frontend code.
 
 # Tech used in the project
 
