@@ -11,8 +11,6 @@ import { GetJWTToken, LoginBasedOnToken, UserContext } from "../feature/authenti
 import UserFactory from "../feature/authentication/logic/UserFactory";
 import { AbilityContext } from "../feature/User/logic/Can";
 import { User } from "../models/User";
-import { HomePage } from "../pages/home";
-import { Patients } from "../pages/patients";
 import { QuestionnaireDetails } from "../pages/questionnaire";
 import { Questionnaires } from "../pages/questionnaires";
 import store from "../redux/store";

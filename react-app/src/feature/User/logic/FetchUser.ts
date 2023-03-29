@@ -1,6 +1,5 @@
 import { KeycloakInstance } from "keycloak-js";
 import { createContext } from "react";
-import { useDispatch } from "react-redux";
 import { Role, User } from "../../../models/User";
 import UserFactory from "./UserFactory";
 

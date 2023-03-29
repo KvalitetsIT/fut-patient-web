@@ -1,10 +1,7 @@
-
 import { Role, User } from "../../../models/User";
 import { getRoleFromStringArray, JWTToken } from "./FetchUser";
 
-
 export default class UserFactory {
-
     createUser(name: string, roles: Role[]): User {
         const user = new User();
         user.name = name;

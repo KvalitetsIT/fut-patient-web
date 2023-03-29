@@ -1,9 +1,7 @@
 import { Questionnaire } from '../../models/Questionnaire';
 import { QuestionnaireResponse } from '../../models/QuestionnaireResponse';
 import { QuestionnaireResponseCount } from '../../models/QuestionnaireResponseCount';
-import HandleQuery from '../../redux/EndpointQueryHandler';
 import { futApiSlice } from '../../redux/fut-api-slice';
-//import handleResponse from '../redux/handleResponse';
 import handleResponse from '../../redux/handleResponse';
 
 
